@@ -1,41 +1,56 @@
 "use client";
 
+import { useState } from "react";
 import {
   Eye,
   Download,
 } from "lucide-react";
+
+import { getAuthApi, getFilesApi } from "@/lib/api";
+import { getAccessToken } from "@/lib/auth";
+import { getPayslipMeta } from "@/lib/payslip";
 
 type Props = {
   files: any[];
   loading: boolean;
 };
 
-const months: Record<string, string> = {
-  "01": "Enero",
-  "02": "Febrero",
-  "03": "Marzo",
-  "04": "Abril",
-  "05": "Mayo",
-  "06": "Junio",
-  "07": "Julio",
-  "08": "Agosto",
-  "09": "Septiembre",
-  "10": "Octubre",
-  "11": "Noviembre",
-  "12": "Diciembre", 
-};
-
 export default function Table({
   files,
   loading,
 }: Props) {
+  const [query, setQuery] = useState("");
+  const rows = (Array.isArray(files) ? files : []).filter((file) => {
+        const haystack = `${file.key} ${getPayslipMeta(file.key).period}`.toLowerCase();
+    return haystack.includes(query.toLowerCase());
+  });
 
   const openFile = async (
     objectKey: string,
+    action: "view" | "download",
   ) => {
+    const token = getAccessToken();
+
+    if (token) {
+      try {
+        await fetch(`${getAuthApi()}/payslip-views`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            objectKey,
+            action,
+          }),
+        });
+      } catch (error) {
+        console.error("No se pudo registrar la visualización", error);
+      }
+    }
 
     const response = await fetch(
-      `http://localhost:3000/files/url?key=${encodeURIComponent(objectKey)}`,
+      `${getFilesApi()}/files/url?key=${encodeURIComponent(objectKey)}`,
     );
 
     const data = await response.json();
@@ -52,14 +67,7 @@ export default function Table({
   }
 
  return (
-  <div className="
-    mt-6
-    bg-white/5
-    backdrop-blur-xl
-    border border-white/10
-    rounded-2xl
-    p-4
-  ">
+  <div className="tech-card mt-6 p-4">
 
     <div className="
       flex flex-col sm:flex-row
@@ -69,12 +77,14 @@ export default function Table({
       mb-5
     ">
 
-      <h2 className="text-lg font-semibold">
-        Mis Boletas
+      <h2 className="text-lg font-semibold tracking-wide">
+        Registros
       </h2>
 
       <input
-        placeholder="Buscar..."
+        placeholder="Filtrar periodo o archivo..."
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
         className="
           bg-white/10
           border border-white/10
@@ -91,24 +101,27 @@ export default function Table({
     {/* MOBILE CARDS */}
     <div className="flex flex-col gap-3 md:hidden">
 
-      {files.map((file, i) => {
+      {rows.length === 0 && (
+        <p className="text-sm text-gray-400 py-4">
+          No hay boletas para mostrar.
+        </p>
+      )}
 
-        const parts = file.key.split("/");
+      {rows.map((file, i) => {
 
-        const year = parts[2];
-        const month = parts[3];
-
-        const period =
-          `${months[month]} ${year}`;
+        const { period, dateLabel } = getPayslipMeta(file.key);
 
         return (
           <div
             key={i}
             className="
-              border border-white/10
+              border border-green-400/15
               rounded-xl
               p-4
               bg-white/5
+              transition duration-300
+              hover:border-green-400/40
+              hover:bg-green-400/10
             "
           >
 
@@ -120,9 +133,7 @@ export default function Table({
                 </p>
 
                 <p className="text-sm">
-                  {new Date(
-                    file.lastModified,
-                  ).toLocaleDateString()}
+                  {dateLabel}
                 </p>
               </div>
 
@@ -152,7 +163,7 @@ export default function Table({
 
               <button
                 onClick={() =>
-                  openFile(file.key)
+                  openFile(file.key, "view")
                 }
                 className="
                   flex-1
@@ -172,7 +183,7 @@ export default function Table({
 
               <button
                 onClick={() =>
-                  openFile(file.key)
+                  openFile(file.key, "download")
                 }
                 className="
                   flex-1
@@ -223,29 +234,28 @@ export default function Table({
 
         <tbody>
 
-          {files.map((file, i) => {
+          {rows.length === 0 && (
+            <tr>
+              <td colSpan={4} className="py-6 text-gray-400">
+                No hay boletas para mostrar.
+              </td>
+            </tr>
+          )}
 
-            const parts =
-              file.key.split("/");
+          {rows.map((file, i) => {
 
-            const year = parts[2];
-            const month = parts[3];
-
-            const period =
-              `${months[month]} ${year}`;
+            const { period, dateLabel } = getPayslipMeta(file.key);
 
             return (
 
               <tr
                 key={i}
-                className="border-t border-white/10"
+                className="border-t border-white/10 transition duration-300 hover:bg-green-400/10"
               >
 
                 <td className="py-4">
 
-                  {new Date(
-                    file.lastModified,
-                  ).toLocaleDateString()}
+                  {dateLabel}
 
                 </td>
 
@@ -263,7 +273,7 @@ export default function Table({
 
                     <button
                       onClick={() =>
-                        openFile(file.key)
+                        openFile(file.key, "view")
                       }
                       className="
                         bg-green-500/20
@@ -280,7 +290,7 @@ export default function Table({
 
                     <button
                       onClick={() =>
-                        openFile(file.key)
+                        openFile(file.key, "download")
                       }
                       className="
                         bg-blue-500/20

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { getFilesApi } from "@/lib/api";
+
 export type EmployeeFile = {
   key: string;
   size: number;
@@ -16,6 +18,12 @@ export function useEmployeeFiles(
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!documentType || !documentNumber) {
+      setFiles([]);
+      setLoading(false);
+      return;
+    }
+
     loadFiles();
   }, [documentType, documentNumber]);
 
@@ -24,14 +32,26 @@ export function useEmployeeFiles(
       setLoading(true);
 
       const response = await fetch(
-        `http://localhost:3000/files/employee?documentType=${documentType}&documentNumber=${documentNumber}`,
+        `${getFilesApi()}/files/employee?documentType=${documentType}&documentNumber=${documentNumber}`,
       );
 
-      const data = await response.json();
+      if (!response.ok) {
+        setFiles([]);
+        return;
+      }
 
-      setFiles(data);
+      const data = await response.json();
+      const list = Array.isArray(data) ? data : [];
+      setFiles(
+        [...list].sort(
+          (a, b) =>
+            new Date(b.lastModified).getTime() -
+            new Date(a.lastModified).getTime(),
+        ),
+      );
     } catch (error) {
       console.error(error);
+      setFiles([]);
     } finally {
       setLoading(false);
     }

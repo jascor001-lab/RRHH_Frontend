@@ -12,15 +12,7 @@ export default function Card({
   subtitle?: string;
 }) {
   return (
-    <div className="
-      bg-white/5
-      backdrop-blur-xl
-      border border-white/10
-      rounded-2xl
-      p-4
-      flex items-center gap-3
-      min-w-0
-    ">
+    <div className="tech-card flex items-center gap-3 p-4 min-w-0">
 
       <div className="
         p-3
