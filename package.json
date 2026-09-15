@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node \"./node_modules/next/dist/bin/next\" dev -H 0.0.0.0 -p 3004 --webpack",
+    "dev": "node \"./node_modules/next/dist/bin/next\" dev -H 0.0.0.0 -p 4009 --webpack",
     "build": "node \"./node_modules/next/dist/bin/next\" build --webpack",
-    "start": "node \"./node_modules/next/dist/bin/next\" start -H 0.0.0.0 -p 3004",
+    "start": "node \"./node_modules/next/dist/bin/next\" start -H 0.0.0.0 -p 4009",
     "start:https": "node \"./scripts/start-https.js\"",
     "start:pwa": "node \"./scripts/start-pwa-system.js\"",
     "lint": "node \"./node_modules/next/dist/bin/next\" lint",

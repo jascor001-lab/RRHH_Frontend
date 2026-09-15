@@ -1,16 +1,15 @@
 @echo off
-title RRHH Frontend - desarrollo (PWA activo como Carta Fianza)
+title RRHH Frontend - HTTP :4009
 echo.
 echo ========================================
-echo  Desarrollo HTTP (service worker ON)
+echo  Acceso normal (sin certificado)
 echo ========================================
 echo.
 echo  URL:
-echo    http://192.168.7.223:3004
-echo    http://localhost:3004
+echo    http://192.168.7.223:4009
+echo    http://localhost:4009
 echo.
-echo  Para PWA igual que Carta Fianza:
-echo    usa INICIAR-PWA.cmd (recomendado)
+echo  Backend auth: puerto 4008
 echo ========================================
 echo.
 
@@ -26,8 +25,8 @@ if not exist "node_modules\next" (
   call npm install
 )
 
-for /f "tokens=5" %%a in ('netstat -ano ^| findstr :3004 ^| findstr LISTENING') do (
-  echo Liberando puerto 3004...
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr :4009 ^| findstr LISTENING') do (
+  echo Liberando puerto 4009...
   taskkill /F /PID %%a >nul 2>&1
 )
 

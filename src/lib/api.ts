@@ -3,7 +3,7 @@ export function getAuthApi() {
     return `${window.location.origin}/auth-api`;
   }
 
-  return process.env.NEXT_PUBLIC_AUTH_API || "http://127.0.0.1:3007";
+  return process.env.NEXT_PUBLIC_AUTH_API || "http://127.0.0.1:4008";
 }
 
 export function getFilesApi() {

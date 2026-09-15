@@ -3,14 +3,13 @@ title MoliRecursos APP (PWA produccion)
 echo.
 echo ========================================
 echo  MoliRecursos - modo app / PWA
-echo  Igual que Carta Fianza (HTTP)
 echo ========================================
 echo.
-echo  URL:
-echo    http://192.168.7.223:3004
+echo  URL HTTP:
+echo    http://192.168.7.223:4009
 echo.
-echo  Android:
-echo    Chrome -^> ⋮ -^> Agregar a pantalla de inicio
+echo  PWA HTTPS:
+echo    https://192.168.7.223:4443/login
 echo ========================================
 echo.
 
@@ -21,8 +20,10 @@ if not exist "node_modules\next" (
   if errorlevel 1 pause & exit /b 1
 )
 
-for /f "tokens=5" %%a in ('netstat -ano ^| findstr :3004 ^| findstr LISTENING') do (
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":4009 :4443" ^| findstr LISTENING') do (
   taskkill /F /PID %%a >nul 2>&1
 )
 
+call npm run build
+if errorlevel 1 pause & exit /b 1
 call npm run start:pwa

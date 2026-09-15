@@ -85,14 +85,15 @@ const nextConfig = {
   // Permite el origen LAN además de localhost (dev / HMR)
   allowedDevOrigins: [
     "192.168.7.223",
-    "http://192.168.7.223:3004",
+    "http://192.168.7.223:4009",
+    "https://192.168.7.223:4443",
     "http://192.168.7.223",
   ],
   async rewrites() {
     return [
       {
         source: "/auth-api/:path*",
-        destination: "http://127.0.0.1:3007/:path*",
+        destination: "http://127.0.0.1:4008/:path*",
       },
       {
         source: "/files-api/:path*",
