@@ -5,7 +5,7 @@ const path = require("path");
 const next = require("next");
 
 const hostname = "0.0.0.0";
-const port = Number(process.env.PORT || 4443);
+const port = Number(process.env.PORT || 3005);
 const certDir = path.join(__dirname, "..", "certs");
 const keyPath = path.join(certDir, "localhost-key.pem");
 const certPath = path.join(certDir, "localhost.pem");

@@ -1,6 +1,6 @@
 /**
- * HTTP  :4009 → uso normal
- * HTTPS :4443 → PWA (Instalar / Abrir en aplicación) en la IP
+ * HTTP  :3005 → uso normal
+ * HTTPS :3443 → PWA (Instalar / Abrir en aplicación) en la IP
  */
 const http = require("http");
 const https = require("https");
@@ -11,8 +11,8 @@ const { spawnSync } = require("child_process");
 const next = require("next");
 
 const hostname = "0.0.0.0";
-const httpPort = Number(process.env.PORT || 4009);
-const httpsPort = Number(process.env.HTTPS_PORT || 4443);
+const httpPort = Number(process.env.PORT || 3005);
+const httpsPort = Number(process.env.HTTPS_PORT || 3443);
 const root = path.join(__dirname, "..");
 const certDir = path.join(root, "certs");
 
@@ -103,7 +103,7 @@ app
         console.log(`  https://localhost:${httpsPort}/login`);
         console.log("----------------------------------------");
         console.log(
-          "En el celular: abre la URL HTTPS :4443,",
+          "En el celular: abre la URL HTTPS :3443,",
         );
         console.log(
           "acepta el aviso del certificado si sale,",

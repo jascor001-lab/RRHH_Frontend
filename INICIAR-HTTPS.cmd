@@ -1,8 +1,7 @@
 @echo off
-title RRHH HTTPS
+title NO USAR - genera aviso de certificado
 echo.
-echo Link PWA: https://192.168.7.223:4443/login
-echo HTTP:     http://192.168.7.223:4009
+echo Usa INICIAR-FRONTEND.cmd en su lugar.
+echo Link: http://192.168.7.223:3005
 echo.
-cd /d "%~dp0"
-call npm run start:https
+pause
